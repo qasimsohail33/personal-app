@@ -14,7 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
-  String _errorMessage = '';
+  String _errorMessage = '1';
 
   Future<void> _login() async {
     setState(() {
