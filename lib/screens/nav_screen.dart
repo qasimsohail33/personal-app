@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:personal_app/screens/profile.dart';
 import 'package:personal_app/screens/transaction_screen.dart';
+import 'package:personal_app/serrvices/notf_service.dart';
 
 import 'financial_screen.dart';
 
@@ -12,6 +13,13 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  NotificationService notificationService = NotificationService();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    notificationService.requestNotificationPermission();
+  }
 
   final List<Widget> _screens = [
     TransactionScreen(),  // Your Transaction Screen

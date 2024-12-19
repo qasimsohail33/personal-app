@@ -1,7 +1,28 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class NotificationService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  void requestNotificationPermission() async {
+    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      alert : true,
+      announcement: true,
+      badge: true,
+      carPlay: true,
+      criticalAlert: true,
+      provisional: true,
+      sound: true,
+    );
+    if (settings.authorizationStatus==AuthorizationStatus.authorized){
+      print("user granted permisson");
+    }else if (settings.authorizationStatus==AuthorizationStatus.provisional){
+      print("user granted prov permisson");
+    }else{
+      AppSettings.openAppSettings();
+      print("user denied permissoin");}
+  }
+
+
 
   Future<String?> getFcmToken() async {
     String? token = await _firebaseMessaging.getToken();
@@ -11,7 +32,7 @@ class NotificationService {
   // Request permissions and initialize FCM
   Future<void> setup() async {
     // Request notification permission (for iOS)
-    await _firebaseMessaging.requestPermission();
+    requestNotificationPermission();
 
     // Handle background messages
     FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
