@@ -18,21 +18,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _errorMessage = '';
 
   Future<void> _signUp() async {
+    // Validation for empty fields
+    if (_fullNameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please fill out all fields.';
+      });
+      return;
+    }
+
+    // Validation for password length
+    if (_passwordController.text.length < 6) {
+      setState(() {
+        _errorMessage = 'Password must be at least 8 characters.';
+      });
+      return;
+    }
+
     setState(() {
       _isLoading = true;
+      _errorMessage = ''; // Clear error message before making the request
     });
 
     try {
       // Create user in FirebaseAuth
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
+        email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
       // Save user info in Firestore
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
-        'fullName': _fullNameController.text,
-        'email': _emailController.text,
+        'fullName': _fullNameController.text.trim(),
+        'email': _emailController.text.trim(),
         'createdAt': Timestamp.now(),
       });
 
@@ -41,9 +60,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      // Handle FirebaseAuth errors with specific messages
       setState(() {
-        _errorMessage = e.toString();
+        switch (e.code) {
+          case 'email-already-in-use':
+            _errorMessage = 'This email is already in use. Please try another.';
+            break;
+          case 'invalid-email':
+            _errorMessage = 'Invalid email format.';
+            break;
+          case 'weak-password':
+            _errorMessage = 'Password is too weak. Please choose a stronger password.';
+            break;
+          default:
+            _errorMessage = 'Sign-up failed. Please try again later.';
+        }
+      });
+    } catch (e) {
+      // Handle any other errors
+      setState(() {
+        _errorMessage = 'An unexpected error occurred. Please try again.';
       });
     } finally {
       setState(() {
@@ -75,10 +112,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 labelText: 'Full name',
                 labelStyle: TextStyle(fontSize: 30, color: Colors.white), // White label text color
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green), // Green border on focus
+                  borderSide: BorderSide(color: Colors.white), // Green border on focus
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green), // Green border for normal state
+                  borderSide: BorderSide(color: Colors.white), // Green border for normal state
                 ),
               ),
             ),
@@ -91,10 +128,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 labelText: 'Email',
                 labelStyle: TextStyle(fontSize: 30, color: Colors.white), // White label text color
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green), // Green border on focus
+                  borderSide: BorderSide(color: Colors.white), // Green border on focus
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green), // Green border for normal state
+                  borderSide: BorderSide(color: Colors.white), // Green border for normal state
                 ),
               ),
             ),
@@ -107,10 +144,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 labelText: 'Password',
                 labelStyle: TextStyle(fontSize: 30, color: Colors.white), // White label text color
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green), // Green border on focus
+                  borderSide: BorderSide(color: Colors.white), // Green border on focus
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green), // Green border for normal state
+                  borderSide: BorderSide(color: Colors.white), // Green border for normal state
                 ),
               ),
             ),
@@ -134,7 +171,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 padding: const EdgeInsets.only(top: 20),
                 child: Text(
                   _errorMessage,
-                  style: TextStyle(color: Colors.red),
+                  style: TextStyle(color: Colors.red, fontSize: 18), // Red error message
+                  textAlign: TextAlign.center,
                 ),
               ),
           ],
