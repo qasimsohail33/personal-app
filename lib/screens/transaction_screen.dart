@@ -71,13 +71,23 @@ class _TransactionScreenState extends State<TransactionScreen> {
               AppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
-                title: Text(
-                  'Transactions',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                title: Row(
+                  children: [
+                   // Image.asset(
+                     // 'assets/logo.png', // Path to your logo image
+                      //height: 30, // Adjust the height of the logo
+                    //),
+                    Icon(Icons.ac_unit_outlined,color: Colors.white,),
+                    SizedBox(width: 10), // Add spacing between logo and text
+                    Text(
+                      'Monifest',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
                 actions: [
                   IconButton(
