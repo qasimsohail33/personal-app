@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_app/screens/SignUpScreen.dart';
 import 'package:personal_app/screens/nav_screen.dart';
-import 'package:personal_app/screens/transaction_screen.dart';  // Adjust import based on your file structure
+// import 'package:personal_app/screens/transaction_screen.dart';  // Adjust import based on your file structure
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
-  String _errorMessage = '123';
+  String _errorMessage = '';
 
   Future<void> _login() async {
     setState(() {
@@ -48,7 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         title: Text('Login', style: TextStyle(fontSize: 30, color: Colors.white)), // Increased font size for app bar title
         centerTitle: true,
-        backgroundColor: Colors.green.shade900,
+        backgroundColor: Colors.purple.shade900,
+        toolbarHeight: 100,
       ),
       backgroundColor: Colors.black, // Set background color to black
       body: Padding(
@@ -60,14 +61,14 @@ class _LoginScreenState extends State<LoginScreen> {
               cursorHeight: 30,
               controller: _emailController,
               style: TextStyle(fontSize: 30, color: Colors.white), // White text color for input text
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
                 labelStyle: TextStyle(fontSize: 30, color: Colors.white), // White label text color
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green.shade900), // Green border on focus
+                  borderSide: BorderSide(color: Colors.white), // Green border on focus
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green.shade900), // Green border for normal state
+                  borderSide: BorderSide(color: Colors.white), // Green border for normal state
                 ),
               ),
             ),
@@ -76,14 +77,14 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: _passwordController,
               obscureText: true,
               style: TextStyle(fontSize: 30, color: Colors.white), // White text color for input text
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 labelStyle: TextStyle(fontSize: 30, color: Colors.white), // White label text color
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green.shade900), // Green border on focus
+                  borderSide: BorderSide(color: Colors.white), // Green border on focus
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.green.shade900), // Green border for normal state
+                  borderSide: BorderSide(color: Colors.white), // Green border for normal state
                 ),
               ),
             ),
@@ -94,8 +95,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: _login,
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40), // Increase button height
-                  backgroundColor: Colors.green.shade900, // Button background color
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40), // Increase button height
+                  backgroundColor: Colors.purple.shade900, // Button background color
                 ),
                 child: Text(
                   'Login',
@@ -114,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
             TextButton(
               onPressed: () {
                 // Navigate to SignUpScreen when "Sign Up" is clicked
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SignUpScreen()),
                 );

@@ -37,7 +37,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
 
       // Navigate to LoginScreen after successful sign-up
-      Navigator.pushReplacement(
+      Navigator.pop(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
@@ -55,24 +55,64 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sign Up')),
+      appBar: AppBar(
+        title: Text('Sign up', style: TextStyle(fontSize: 30, color: Colors.white)), // Increased font size for app bar title
+        centerTitle: true,
+        backgroundColor: Colors.purple.shade900,
+        toolbarHeight: 100,
+      ),
+      backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
+              cursorHeight: 30,
               controller: _fullNameController,
-              decoration: InputDecoration(labelText: 'Full Name'),
+              style: TextStyle(fontSize: 30, color: Colors.white), // White text color for input text
+              decoration: const InputDecoration(
+                labelText: 'Full name',
+                labelStyle: TextStyle(fontSize: 30, color: Colors.white), // White label text color
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green), // Green border on focus
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green), // Green border for normal state
+                ),
+              ),
             ),
+            SizedBox(height: 20),
             TextField(
+              cursorHeight: 30,
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              style: TextStyle(fontSize: 30, color: Colors.white), // White text color for input text
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                labelStyle: TextStyle(fontSize: 30, color: Colors.white), // White label text color
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green), // Green border on focus
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green), // Green border for normal state
+                ),
+              ),
             ),
+            SizedBox(height: 20),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
+              style: TextStyle(fontSize: 30, color: Colors.white), // White text color for input text
+              decoration: const InputDecoration(
+                labelText: 'Password',
+                labelStyle: TextStyle(fontSize: 30, color: Colors.white), // White label text color
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green), // Green border on focus
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.green), // Green border for normal state
+                ),
+              ),
             ),
             SizedBox(height: 20),
             if (_isLoading)
@@ -80,7 +120,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
             else
               ElevatedButton(
                 onPressed: _signUp,
-                child: Text('Sign Up'),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40), // Increase button height
+                  backgroundColor: Colors.purple.shade900, // Button background color
+                ),
+                child: Text(
+                  'Sign Up',
+                  style: TextStyle(fontSize: 30, color: Colors.white), // White text for button
+                ),
               ),
             if (_errorMessage.isNotEmpty)
               Padding(
