@@ -183,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     },
                     icon: Icon(Icons.credit_card, color: Colors.white),
-                    label: Text('Go to Grid View', style: TextStyle(color: Colors.white, fontSize: 18)),
+                    label: Text('Grouped Transactions', style: TextStyle(color: Colors.white, fontSize: 18)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purple, // Background color
                       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
