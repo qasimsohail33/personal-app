@@ -3,6 +3,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:personal_app/screens/profile.dart';
 import 'package:personal_app/screens/transaction_screen.dart';
 import 'package:personal_app/serrvices/notf_service.dart';
+import 'package:personal_app/screens/financial_screen.dart';
 
 import 'financial_screen.dart';
 
@@ -24,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     TransactionScreen(),  // Your Transaction Screen
     ProfileScreen(),      // Your Profile Screen
-    FinancialScreen(),    // Your Financial Screen
+    InvestmentLoanScreen(),    // Your Financial Screen
   ];
 
   @override
