@@ -1,8 +1,15 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:app_settings/app_settings.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+ final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
   void requestNotificationPermission() async {
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert : true,
@@ -22,51 +29,73 @@ class NotificationService {
       print("user denied permissoin");}
   }
 
+  void initLocalNotifications (BuildContext context,RemoteMessage message) async {
+    var androidInitialization = const AndroidInitializationSettings('@mipmap/ic_launcher');
+var initializationSetting = InitializationSettings(
+  android: androidInitialization,
+);
+await _flutterLocalNotificationsPlugin.initialize(
+    initializationSetting,
+  onDidReceiveNotificationResponse: (payload){
 
 
+  }
+
+);
+
+  }
   Future<String?> getFcmToken() async {
     String? token = await _firebaseMessaging.getToken();
-    return token;
+    return token!;
+  }
+
+  void firebaseInit(BuildContext context){
+    FirebaseMessaging.onMessage.listen((message){
+      if (Platform.isAndroid) {
+        initLocalNotifications(context, message);
+        showNotification(message);
+      }
+      print((message.notification!.title.toString()));
+      print((message.notification!.body.toString()));
+      showNotification(message);
+    });
   }
 
   // Request permissions and initialize FCM
-  Future<void> setup() async {
-    // Request notification permission (for iOS)
-    requestNotificationPermission();
-
-    // Handle background messages
-    FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
-
-    // Handle foreground messages
-    FirebaseMessaging.onMessage.listen(_onMessageHandler);
-  }
 
   // Handle incoming background messages
-  static Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-    print('Handling a background message: ${message.messageId}');
-  }
-
-  // Handle incoming foreground messages
-  void _onMessageHandler(RemoteMessage message) {
-    if (message.notification != null) {
-      print('Message received: ${message.notification!.title}');
-      // Optionally, display an alert or a dialog
-      // _showNotificationDialog(message.notification!);
-    }
-  }
 
   // Optionally, display a notification dialog (foreground)
-  void _showNotificationDialog(RemoteNotification notification) {
-    // This can be a dialog or any UI element you choose to show
-    // when the app is in the foreground.
+  void showNotification(RemoteMessage message ) async {
+
+    AndroidNotificationChannel channel = AndroidNotificationChannel(
+        Random.secure().nextInt(10000).toString(),
+        'High importance notification',
+      importance: Importance.max,
+    );
+
+    AndroidNotificationDetails androidNot0ificationDetails = AndroidNotificationDetails(
+    channel.id.toString(),
+    channel.name.toString(),
+     channelDescription:  'your channel description',
+      importance: Importance.high,
+      priority: Priority.high,
+      ticker: 'ticker'
+    );
+    NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNot0ificationDetails,
+    );
+    
+    Future.delayed(Duration.zero,(){
+      _flutterLocalNotificationsPlugin.show(
+          1,
+          message.notification!.title.toString(),
+          message.notification!.body.toString(),
+          notificationDetails);
+    });
   }
 
   // Optionally, send a notification
-  Future<void> sendNotification(String token, String title, String body) async {
-    await _firebaseMessaging.sendMessage(
-      to: token,
-      data: {'title': title, 'body': body},
-    );
-  }
+
 }
 

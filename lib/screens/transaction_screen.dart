@@ -1,14 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:personal_app/screens/LoginScreen.dart';
-import 'package:personal_app/screens/financial_screen.dart';
-import 'package:personal_app/screens/profile.dart';
 import '../models/transactions.dart';
 import 'package:personal_app/serrvices/database_services.dart';
 import '../serrvices/notf_service.dart';
-
 class TransactionScreen extends StatefulWidget {
   @override
   _TransactionScreenState createState() => _TransactionScreenState();
@@ -71,25 +67,38 @@ class _TransactionScreenState extends State<TransactionScreen> {
               AppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
-                title: Row(
-                  children: [
-                   // Image.asset(
-                     // 'assets/logo.png', // Path to your logo image
-                      //height: 30, // Adjust the height of the logo
-                    //),
-                    Icon(Icons.ac_unit_outlined,color: Colors.white,),
-                    SizedBox(width: 10), // Add spacing between logo and text
-                    Text(
-                      'Monifest',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                title:
+                    Row(
+                      mainAxisSize: MainAxisSize.min, // Ensure Row only takes as much space as its children
+                      children: [
+                        // Container wraps Image to constrain size
+                        Container(
+                          width: 30,  // Adjusted width for better control
+                          //height: 35, // Adjusted height for better fitting
+                          child: Image(
+                            image: AssetImage("assets/logopng.png"),
+                            fit: BoxFit.contain, // Ensure the logo scales proportionally
+                          ),
+
+                        ),
+                        //SizedBox(width: 10), // Spacing between the logo and the text
+                        // Icon(
+                        //   Icons.ac_unit_outlined,
+                        //   color: Colors.white,
+                        // ),
+                        SizedBox(width: 4), // Spacing between icon and text
+                        Text(
+                          'Monifest',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                actions: [
+
+                    actions: [
                   IconButton(
                     icon: Icon(Icons.logout, color: Colors.white),
                     onPressed: () async {
@@ -393,13 +402,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
                     // Send notification after updating balance
                     final userFcmToken = await NotificationService().getFcmToken();
-                    if (userFcmToken != null) {
-                      NotificationService().sendNotification(
-                        userFcmToken,
-                        'New Transaction Added',
-                        'You have added a new transaction: $title, \$${amount.toStringAsFixed(2)}',
-                      );
-                    }
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

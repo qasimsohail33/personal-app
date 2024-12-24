@@ -5,8 +5,6 @@ import 'package:personal_app/screens/transaction_screen.dart';
 import 'package:personal_app/serrvices/notf_service.dart';
 import 'package:personal_app/screens/financial_screen.dart';
 
-import 'financial_screen.dart';
-
 class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -20,6 +18,11 @@ class _MainScreenState extends State<MainScreen> {
     // TODO: implement initState
     super.initState();
     notificationService.requestNotificationPermission();
+    notificationService.firebaseInit(context);
+    notificationService.getFcmToken().then((value){
+      print("FCM token");
+      print(value);
+    });
   }
 
   final List<Widget> _screens = [
@@ -45,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
           });
         },
         tabs: [
-          GButton(icon: Icons.list_alt, text: 'Transavtions', backgroundColor: Colors.purple),
+          GButton(icon: Icons.list_alt, text: 'Transactions', backgroundColor: Colors.purple),
           GButton(icon: Icons.person, text: 'Profile', backgroundColor: Colors.purple),
           GButton(icon: Icons.grid_view_rounded, text: 'Financials', backgroundColor: Colors.purple),
         ],

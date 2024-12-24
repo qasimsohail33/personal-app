@@ -6,8 +6,6 @@ import 'serrvices/auth_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  NotificationService().setup();
-
   runApp(MyApp());
 }
 
