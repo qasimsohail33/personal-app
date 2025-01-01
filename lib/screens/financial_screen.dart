@@ -7,9 +7,11 @@ class InvestmentLoanScreen extends StatefulWidget {
   @override
   _InvestmentLoanScreenState createState() => _InvestmentLoanScreenState();
 }
+
 class _InvestmentLoanScreenState extends State<InvestmentLoanScreen> {
   double _balance = 0;
   double _originalBalance = 0;  // Store the original balance
+  int _clickCounter = 0; // Counter to track the number of button presses
 
   @override
   void initState() {
@@ -54,7 +56,6 @@ class _InvestmentLoanScreenState extends State<InvestmentLoanScreen> {
             ),
           ],
         ),
-
         backgroundColor: Colors.black, // Dark AppBar
       ),
       body: SingleChildScrollView(
@@ -88,6 +89,14 @@ class _InvestmentLoanScreenState extends State<InvestmentLoanScreen> {
                       color: Colors.white,
                     ),
                   ),
+                  // Displaying the counter next to the updated balance
+                  Text(
+                    "Effect of Rate in $_clickCounter years",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align buttons in a row
                     children: [
@@ -101,6 +110,7 @@ class _InvestmentLoanScreenState extends State<InvestmentLoanScreen> {
                             double investmentEffect = _investmentAmount * (_investmentRate / 100);
                             double loanEffect = _loanAmount * (_loanRate / 100);
                             _balance += investmentEffect - loanEffect;
+                            _clickCounter++;  // Increment the counter
                           });
                         },
                         child: const Text("Show Effect"),
@@ -113,6 +123,7 @@ class _InvestmentLoanScreenState extends State<InvestmentLoanScreen> {
                         onPressed: () {
                           setState(() {
                             _balance = _originalBalance;  // Reset to the original balance
+                            _clickCounter = 0;  // Reset the counter
                           });
                         },
                         child: const Text("Reset to Original Balance"),
@@ -162,9 +173,6 @@ class _InvestmentLoanScreenState extends State<InvestmentLoanScreen> {
             ),
 
             const Divider(height: 20, thickness: 2, color: Colors.purple),
-
-            // Balance Section
-
           ],
         ),
       ),

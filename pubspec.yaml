@@ -22,6 +22,7 @@ dependencies:
   app_settings: ^5.1.1
   image_picker: ^1.1.2
   fl_chart: ^0.69.2
+  awesome_notifications: ^0.10.0
 
 dev_dependencies:
   flutter_test:
@@ -34,3 +35,9 @@ flutter:
   assets:
     - assets/logopng.png   # Include the correct path to your logo file
     - assets/onlylogo.png  # Include another asset if needed
+fonts:
+  - family: Poppins
+    fonts:
+      - asset: fonts/Pop.ttf
+      - asset: fonts/PopB.ttf
+        weight: 700

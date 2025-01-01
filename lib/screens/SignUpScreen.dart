@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:personal_app/screens/LoginScreen.dart'; // Adjust import based on your file structure
+import 'package:personal_app/screens/LoginScreen.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -11,14 +11,13 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
-  final _fullNameController = TextEditingController(); // Controller for full name
+  final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   String _errorMessage = '';
 
   Future<void> _signUp() async {
-    // Validation for empty fields
     if (_fullNameController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _passwordController.text.isEmpty) {
@@ -28,10 +27,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-    // Validation for password length
     if (_passwordController.text.length < 6) {
       setState(() {
-        _errorMessage = 'Password must be at least 8 characters.';
+        _errorMessage = 'Password must be at least 6 characters.';
       });
       return;
     }
@@ -42,26 +40,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
 
     try {
-      // Create user in FirebaseAuth
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
-      // Save user info in Firestore
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'fullName': _fullNameController.text.trim(),
         'email': _emailController.text.trim(),
         'createdAt': Timestamp.now(),
       });
 
-      // Navigate to LoginScreen after successful sign-up
       Navigator.pop(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     } on FirebaseAuthException catch (e) {
-      // Handle FirebaseAuth errors with specific messages
       setState(() {
         switch (e.code) {
           case 'email-already-in-use':
@@ -78,7 +72,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
       });
     } catch (e) {
-      // Handle any other errors
       setState(() {
         _errorMessage = 'An unexpected error occurred. Please try again.';
       });
@@ -91,31 +84,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Use MediaQuery to get screen size for better responsiveness
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign up', style: TextStyle(fontSize: 30, color: Colors.white)), // Increased font size for app bar title
+        title: Text('Sign up', style: TextStyle(fontSize: 30, color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.purple.shade900,
-        toolbarHeight: 100,
+        toolbarHeight: screenHeight * 0.12, // Adjust toolbar height based on screen height
       ),
       backgroundColor: Colors.black,
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
+            SizedBox(height: screenHeight * 0.05), // Add top padding based on screen size
             TextField(
               cursorHeight: 30,
               controller: _fullNameController,
-              style: TextStyle(fontSize: 30, color: Colors.white), // White text color for input text
+              style: TextStyle(fontSize: 24, color: Colors.white),
               decoration: const InputDecoration(
                 labelText: 'Full name',
-                labelStyle: TextStyle(fontSize: 30, color: Colors.white), // White label text color
+                labelStyle: TextStyle(fontSize: 24, color: Colors.white),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white), // Green border on focus
+                  borderSide: BorderSide(color: Colors.white),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white), // Green border for normal state
+                  borderSide: BorderSide(color: Colors.white),
                 ),
               ),
             ),
@@ -123,15 +121,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
             TextField(
               cursorHeight: 30,
               controller: _emailController,
-              style: TextStyle(fontSize: 30, color: Colors.white), // White text color for input text
+              style: TextStyle(fontSize: 24, color: Colors.white),
               decoration: const InputDecoration(
                 labelText: 'Email',
-                labelStyle: TextStyle(fontSize: 30, color: Colors.white), // White label text color
+                labelStyle: TextStyle(fontSize: 24, color: Colors.white),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white), // Green border on focus
+                  borderSide: BorderSide(color: Colors.white),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white), // Green border for normal state
+                  borderSide: BorderSide(color: Colors.white),
                 ),
               ),
             ),
@@ -139,15 +137,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
             TextField(
               controller: _passwordController,
               obscureText: true,
-              style: TextStyle(fontSize: 30, color: Colors.white), // White text color for input text
+              style: TextStyle(fontSize: 24, color: Colors.white),
               decoration: const InputDecoration(
                 labelText: 'Password',
-                labelStyle: TextStyle(fontSize: 30, color: Colors.white), // White label text color
+                labelStyle: TextStyle(fontSize: 24, color: Colors.white),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white), // Green border on focus
+                  borderSide: BorderSide(color: Colors.white),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white), // Green border for normal state
+                  borderSide: BorderSide(color: Colors.white),
                 ),
               ),
             ),
@@ -158,12 +156,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ElevatedButton(
                 onPressed: _signUp,
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40), // Increase button height
-                  backgroundColor: Colors.purple.shade900, // Button background color
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                  backgroundColor: Colors.purple.shade900,
+                  minimumSize: Size(screenWidth * 0.6, 50), // Make button size responsive
                 ),
                 child: Text(
                   'Sign Up',
-                  style: TextStyle(fontSize: 30, color: Colors.white), // White text for button
+                  style: TextStyle(fontSize: 24, color: Colors.white),
                 ),
               ),
             if (_errorMessage.isNotEmpty)
@@ -171,7 +170,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 padding: const EdgeInsets.only(top: 20),
                 child: Text(
                   _errorMessage,
-                  style: TextStyle(color: Colors.red, fontSize: 18), // Red error message
+                  style: TextStyle(color: Colors.red, fontSize: 18),
                   textAlign: TextAlign.center,
                 ),
               ),

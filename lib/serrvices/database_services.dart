@@ -33,6 +33,7 @@ class DatabaseService {
     }
   }
 
+
   // Get a stream of transactions for the logged-in user
   Stream<List<FinanceTransaction>> getTransactions() {
     // Ensure the user is logged in before fetching data

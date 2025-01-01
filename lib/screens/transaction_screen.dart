@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,7 @@ class TransactionScreen extends StatefulWidget {
 
 class _TransactionScreenState extends State<TransactionScreen> {
   String? _fullName;
+  final NotificationService notificationService = NotificationService();
 
   @override
   void initState() {
@@ -41,6 +43,118 @@ class _TransactionScreenState extends State<TransactionScreen> {
       });
     }
   }
+  void _showTransactionDetailsDialog(BuildContext context, FinanceTransaction transaction) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor: Colors.black.withOpacity(0.85), // Dark background
+          title: Text(
+            'Transaction Details',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  title: Text(
+                    'Title:',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(
+                    transaction.title,
+                    style: TextStyle(color: Colors.white60),
+                  ),
+                ),
+                Divider(color: Colors.white38),
+                ListTile(
+                  title: Text(
+                    'Amount:',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(
+                    '\$${transaction.amount.toStringAsFixed(2)}',
+                    style: TextStyle(color: Colors.white60),
+                  ),
+                ),
+                Divider(color: Colors.white38),
+                ListTile(
+                  title: Text(
+                    'Type:',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(
+                    transaction.type,
+                    style: TextStyle(color: Colors.white60),
+                  ),
+                ),
+                Divider(color: Colors.white38),
+                ListTile(
+                  title: Text(
+                    'Category:',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(
+                    transaction.category,
+                    style: TextStyle(color: Colors.white60),
+                  ),
+                ),
+                Divider(color: Colors.white38),
+                ListTile(
+                  title: Text(
+                    'Date:',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(
+                    transaction.date.toLocal().toString(),
+                    style: TextStyle(color: Colors.white60),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                'Close',
+                style: TextStyle(
+                  color: Colors.purple,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
 
   @override
@@ -68,37 +182,33 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 title:
-                    Row(
-                      mainAxisSize: MainAxisSize.min, // Ensure Row only takes as much space as its children
-                      children: [
-                        // Container wraps Image to constrain size
-                        Container(
-                          width: 30,  // Adjusted width for better control
-                          //height: 35, // Adjusted height for better fitting
-                          child: Image(
-                            image: AssetImage("assets/logopng.png"),
-                            fit: BoxFit.contain, // Ensure the logo scales proportionally
-                          ),
-
-                        ),
-                        //SizedBox(width: 10), // Spacing between the logo and the text
-                        // Icon(
-                        //   Icons.ac_unit_outlined,
-                        //   color: Colors.white,
-                        // ),
-                        SizedBox(width: 4), // Spacing between icon and text
-                        Text(
-                          'Monifest',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
+                Row(
+                  mainAxisSize: MainAxisSize.min, // Ensure Row only takes as much space as its children
+                  crossAxisAlignment: CrossAxisAlignment.center, // Align items vertically at the center
+                  children: [
+                    // Container wraps Image to constrain size and adds bottom margin
+                    Container(
+                      width: 30, // Adjusted width for better control
+                      margin: EdgeInsets.only(bottom: 4), // Adds bottom margin to align with text
+                      child: Image.asset(
+                        'assets/logopng.png', // Adjust path as needed
+                        fit: BoxFit.contain, // Ensure the logo scales proportionally
+                      ),
                     ),
+                    SizedBox(width: 4), // Spacing between icon and text
+                    Text(
+                      'Monifest',
+                      style: TextStyle(
+                        fontFamily: 'Poppins', // Use custom Poppins font
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
 
-                    actions: [
+              actions: [
                   IconButton(
                     icon: Icon(Icons.logout, color: Colors.white),
                     onPressed: () async {
@@ -168,12 +278,18 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text(transaction.category),
-                            trailing: Text(
-                              '\$${transaction.amount.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                color: transaction.type == 'income' ? Colors.green : Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // View button
+                                IconButton(
+                                  icon: Icon(Icons.remove_red_eye, color: Colors.black),
+                                  onPressed: () {
+                                    // Add your logic for viewing the transaction details
+                                    _showTransactionDetailsDialog(context, transaction);
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         );
@@ -182,6 +298,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   },
                 ),
               ),
+
             ],
           ),
         ),
@@ -330,7 +447,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     // Validation checks
                     bool isValid = true;
 
-
                     // Validate title
                     if (title.isEmpty) {
                       setState(() {
@@ -348,7 +464,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     }
 
                     // Validate type
-                    // Validation logic
                     if (selectedType.isEmpty) {
                       setState(() {
                         typeError = 'Please select a transaction type!';
@@ -360,7 +475,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       });
                     }
 
-// Validate category
+                    // Validate category
                     if (selectedCategory.isEmpty) {
                       setState(() {
                         categoryError = 'Please select a category!';
@@ -373,7 +488,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     }
 
                     if (!isValid) return; // Don't proceed if validation fails
-
 
                     final transaction = FinanceTransaction(
                       id: '', // Firestore generates the ID
@@ -395,13 +509,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     if (userId != null) {
                       final balanceChange = selectedType == 'income' ? amount : -amount;
                       await FirebaseFirestore.instance.collection('users').doc(userId).update({
-                        'balance': FieldValue.increment(balanceChange), // Increment or decrement the balance
+                        'balance': FieldValue.increment(balanceChange),
                       });
                     }
                     await _fetchUserBalance();
-
-                    // Send notification after updating balance
-                    final userFcmToken = await NotificationService().getFcmToken();
+                    notificationService.sendLocalNotificationWhenTransactionAdded(amount , selectedType);
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -411,7 +523,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     'Add',
                     style: TextStyle(color: Colors.white),
                   ),
-                ),
+                )
+
               ],
             );
           },
